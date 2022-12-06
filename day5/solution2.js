@@ -55,7 +55,7 @@ function processMoves(movesTextArray, stacks) {
         const move = readMoveText(moveText);
         const fromStack = stacks[move.from - 1];
         const items = fromStack.slice(-move.amount);
-        fromStack.length = fromStack.length - move.amount;
+        fromStack.length -= move.amount;
         stacks[move.to - 1].push(...items);
     });
 }
