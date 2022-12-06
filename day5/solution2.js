@@ -30,7 +30,7 @@ function getStacks(stackStateTextArray) {
     // the last line is numberic stack labels with two spaces between each (i.e. 1  2  3)
     const stackCountText = stackStateTextArray.slice(-1)[0].split('  ');
     // the last number is the number of stacks we need
-    const stackCount = Number.parseInt(stackCountText[stackCountText.length - 1]);
+    const stackCount = Number.parseInt(stackCountText.slice(-1)[0]);
     //create a two-diminsional array to represent the stacks
     const stacks = Array.from(Array(stackCount), () => new Array());
     
