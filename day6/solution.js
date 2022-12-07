@@ -27,14 +27,13 @@ function findMarkers(input, windowLength) {
                 });
             
             if (!hasDup) {
+                markers.push(window.end);
                 break;
             }
 
             window.start++;
             window.end++;
         }
-
-        markers.push(window.end);
     }
     
     return markers;
