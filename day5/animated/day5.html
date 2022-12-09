@@ -1,0 +1,67 @@
+<html>
+<head>
+    <link rel="stylesheet" href="day5.css">
+</head>
+<body>
+    <div id="settings">
+        <div>
+            Crane model: 
+            <input type="radio" name="crane_model" id="crane9000" value="9000" checked>
+            <label for="crane9000">9000</label>
+            <input type="radio" name="crane_model" id="crane9001" value="9001">
+            <label for="crane9001">9001</label>
+        </div>
+        <div>
+            <div>
+                Input file:
+            </div>
+            <div>
+                <input type="file" name="inputfile" id="inputfile" onchange="setFile(this)">
+            </div>
+        </div>
+        <div>
+            Speed: 
+            <input type="radio" name="speed" id="speed_slow" value="0" checked>
+            <label for="speed_slow">Slow</label>
+            <input type="radio" name="speed" id="speed_fast" value="1">
+            <label for="speed_fast">Fast</label>
+        </div>
+        <div>
+            <button id="start_btn" disabled onclick="start()">Start Stacking</button>
+        </div>
+    </div>
+    <div id="game_area">
+        <div id="track" class="track"></div> 
+        <div id="track_progress" class="track"></div>  
+        <div id="crane" class="stack_1"></div>
+        <div id="claw" class="stack_1 height_30"></div>
+        <div id="crates"></div>
+    </div>
+    <div id="ground"></div>
+
+    <script src="day5.js"></script>
+    <script>
+        let fileBlob;
+        function setFile(input) {
+            fileBlob = input.files[0];
+            document.getElementById('start_btn').disabled = false;
+        }    
+
+        function start() {
+            document.getElementById('settings').className = 'hide';
+
+            const isFast = !!+document.querySelector('input[name="speed"]:checked').value;
+            const model = document.querySelector('input[name="crane_model"]:checked').value;
+            
+            const fr = new FileReader();
+            fr.onload = function() {
+                const { stackStateTextArray, movesTextArray } = readInput(fr.result);
+                const stacks = getStacks(stackStateTextArray);
+                drawStacks(stacks);
+                animateMoves(movesTextArray, stacks, model, isFast);
+            }
+            fr.readAsText(fileBlob);
+        }
+    </script>
+</body>
+</html>

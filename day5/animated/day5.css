@@ -1,0 +1,300 @@
+:root {
+    --crate-width: 8%;
+    --crate-height: 2%;
+}
+
+body {
+    background-color: skyblue;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+#settings {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    background: white;
+    z-index: 1000;
+    flex-direction: column;
+    align-content: flex-start;
+    justify-content: center;
+    font-size: 3rem;
+    font-family: cursive;
+    color: red;
+}
+#settings button {
+    background-color: lightgreen;
+    width: 23rem;
+    height: 6rem;
+    font-size: 2rem;
+}
+#settings>div {
+    margin: 1rem;
+    margin-left: 6rem;
+}
+#settings input[type=file] {
+    font-size: 2rem;
+    font-family: cursive;
+}
+
+#game_area {
+    position: relative;
+    height: 98vh;
+    width: 90vh;
+}
+
+.track {
+    position: absolute;
+    top: 5%;
+    left: 1%;
+    right: 1%;
+    height: 3%;
+    border-radius: 10px;
+    background: url('trackbg.png') top left repeat-x;
+}
+
+#track {
+    filter: grayscale();
+    box-shadow: 0px 5px 10px -5px rgba(0,0,0,0.75);
+}
+
+#crane {
+    position: absolute;
+    top: 2%;
+    height: 8%;
+    width: 8%;
+    background: transparent;
+    box-shadow: 0px 5px 10px -5px rgba(0,0,0,0.75);
+}
+#crane::before {
+    content: ' ';
+    background: url(crane.png) no-repeat;
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    left: -33%;
+}
+
+#claw {
+    position: absolute;
+    top: 10%;
+    width: var(--crate-width);
+    background-color: transparent;
+    margin-bottom: 1em;
+}
+#claw::before {
+    content: ' ';
+    background: url(claw.png) bottom center no-repeat, url(chain.png) bottom center repeat-y;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+}
+
+#crates>div {
+    position: absolute;
+    height: var(--crate-height);
+    width: var(--crate-width);
+    background-color: burlywood;
+    border-radius: 10%;
+    border-color: black;
+    border-width: .15em;
+    border-style: solid;
+    font-family: ui-monospace;
+    font-weight: bold;
+    text-align: center;
+}
+
+#ground {
+    background-color: green;
+    position: absolute;
+    bottom: 0;
+    height: 2vh;
+    width: 100%;
+}
+
+.stack_1 {
+    left: 2%;
+}
+
+.stack_2 {
+    left: 12%;
+}
+
+.stack_3 {
+    left: 22%;
+}
+
+.stack_4 {
+    left: 32%;
+}
+
+.stack_5 {
+    left: 42%;
+}
+
+.stack_6 {
+    left: 52%;
+}
+
+.stack_7 {
+    left: 62%;
+}
+
+.stack_8 {
+    left: 72%;
+}
+
+.stack_9 {
+    left: 82%;
+}
+
+.height_0 {
+    bottom: 0;
+}
+
+.height_1 {
+    bottom: 3%;
+}
+
+.height_2 {
+    bottom: 6%;
+}
+
+.height_3 {
+    bottom: 9%;
+}
+
+.height_4 {
+    bottom: 12%;
+}
+
+.height_5 {
+    bottom: 15%;
+}
+
+.height_6 {
+    bottom: 18%;
+}
+
+.height_7 {
+    bottom: 21%;
+}
+
+.height_8 {
+    bottom: 24%;
+}
+
+.height_9 {
+    bottom: 27%;
+}
+
+.height_10 {
+    bottom: 30%;
+}
+
+.height_11 {
+    bottom: 33%;
+}
+
+.height_12 {
+    bottom: 36%;
+}
+
+.height_13 {
+    bottom: 39%;
+}
+
+.height_14 {
+    bottom: 42%;
+}
+
+.height_15 {
+    bottom: 45%;
+}
+
+.height_16 {
+    bottom: 48%;
+}
+
+.height_17 {
+    bottom: 51%;
+}
+
+.height_18 {
+    bottom: 54%;
+}
+
+.height_19 {
+    bottom: 57%;
+}
+
+.height_20 {
+    bottom: 60%;
+}
+
+.height_21 {
+    bottom: 63%;
+}
+
+.height_22 {
+    bottom: 66%;
+}
+
+.height_23 {
+    bottom: 69%;
+}
+
+.height_24 {
+    bottom: 72%;
+}
+
+.height_25 {
+    bottom: 75%;
+}
+
+.height_26 {
+    bottom: 78%;
+}
+
+.height_27 {
+    bottom: 81%;
+}
+
+.height_28 {
+    bottom: 84%;
+}
+
+.height_29 {
+    bottom: 87%;
+}
+
+.height_30 {
+    bottom: 90%;
+}
+
+.animate_x_slow {
+    transition: left 1s;
+}
+
+.animate_y_slow {
+    transition: bottom 2s;
+}
+
+.animate_x_fast {
+    transition: left 0.1s;
+}
+
+.animate_y_fast {
+    transition: bottom 0.2s;
+}
+
+.hide {
+    opacity: 0;
+    transition: opacity 1s;
+}
