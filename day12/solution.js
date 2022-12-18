@@ -58,7 +58,7 @@ function findStartNodes(nodes, ids) {
 
 function findDistanceToEndNode(nodes, startNode) {
     resetNodes(nodes);
-    
+
     const queue = [];
     startNode.visited = true;
     queue.push(startNode);
@@ -99,14 +99,11 @@ function getDistance(node) {
     return distance;
 }
 
-function canMove(nodes, x, y, last) {
-    if (last == null) {
-        return true;
-    }
+function canMove(nodes, x, y, previous) {
     if (y < 0 || y >= nodes.length || x < 0 || x >= nodes[y].length) {
         return false;
     }
-    return last.elevation.charCodeAt(0) - nodes[y][x].elevation.charCodeAt(0) >= -1;
+    return previous.elevation.charCodeAt(0) - nodes[y][x].elevation.charCodeAt(0) >= -1;
 }
 
 async function run() {
