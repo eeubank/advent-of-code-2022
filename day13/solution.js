@@ -38,8 +38,8 @@ function parse(input) {
 
 function sort(left, right) {
     let equality = 0;
-    let i = 0;
-    while (i < Math.max(left.length, right.length) && equality === 0) {
+    let i = -1;
+    while (++i < Math.max(left.length, right.length) && equality === 0) {
         let vLeft = left[i];
         let vRight = right[i];
         
@@ -60,8 +60,6 @@ function sort(left, right) {
             vRight = vRightIsArr ? vRight : [vRight];
             equality = sort(vLeft, vRight);
         }
-
-        i++;
     }
 
     return equality;
