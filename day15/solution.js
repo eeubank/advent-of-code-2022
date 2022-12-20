@@ -54,7 +54,7 @@ async function readInput(path) {
     return buffer.toString().split('\n');
 }
 
-function calcPositionsWithoutSensors(input, row) {
+function calcPositionsWithoutBeacons(input, row) {
     const sensors = parseSensors(input);
     const set = new Set();
     sensors.forEach(s => s.positionsCovered(row).forEach(p => set.add(p)));
@@ -115,13 +115,13 @@ async function run() {
     const input = await readInput('input.txt');
     
     // for test data
-    // const positionsWithoutSensors = calcPositionsWithoutSensors(input, 10);
-    // console.log('positionsWithoutSensors', positionsWithoutSensors);
+    // const positionsWithoutBeacons = calcPositionsWithoutBeacons(input, 10);
+    // console.log('positionsWithoutBeacons', positionsWithoutBeacons);
     // const distressFreq = calcDistressFreq(input, 0, 20);
     // console.log('distressFreq', distressFreq);
 
-    const positionsWithoutSensors = calcPositionsWithoutSensors(input, 2000000);
-    console.log('positionsWithoutSensors', positionsWithoutSensors);
+    const positionsWithoutBeacons = calcPositionsWithoutBeacons(input, 2000000);
+    console.log('positionsWithoutBeacons', positionsWithoutBeacons);
     const distressFreq = calcDistressFreq(input, 0, 4000000);
     console.log('distressFreq', distressFreq);
 }
