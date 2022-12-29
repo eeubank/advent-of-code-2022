@@ -46,7 +46,7 @@ function calcMaxPressureRelease(inputs, minutes) {
                 }
             }
             if (!bestNeighbor) {
-                moveLeft = false;
+                movesLeft = false;
                 break;
             }
             minutesLeft -= bestNeighbor.minutes;
