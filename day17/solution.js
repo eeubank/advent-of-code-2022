@@ -10,18 +10,18 @@ const EDGE_RIGHT = 1;
 
 class Shaft {
     rows = new Array(SHAFT_HEIGHT).fill(0);
-    maxRowNumSet = 0;
+    maxRowNumSet = -1;
 
     get(rowNum) {
         if (!this.hasRowBeenSet(rowNum)) {
-            return this.walls;
+            return 0;
         }
         return this.rows[rowNum % SHAFT_HEIGHT];
     }
 
     set(rowNum, value) {
         if (!this.hasRowBeenSet(rowNum)) {
-            this.rows[rowNum % SHAFT_HEIGHT] = this.walls;
+            this.rows[rowNum % SHAFT_HEIGHT] = 0;
             this.maxRowNumSet = rowNum;
         }
         this.rows[rowNum % SHAFT_HEIGHT] |= value;
