@@ -1,0 +1,95 @@
+Statistical profiling result from isolate-0x138078000-89540-v8.log, (43373 ticks, 217 unaccounted, 0 excluded).
+
+ [Shared libraries]:
+   ticks  total  nonlib   name
+   2931    6.8%          /usr/lib/system/libsystem_m.dylib
+    127    0.3%          /usr/lib/system/libsystem_malloc.dylib
+     93    0.2%          /usr/lib/system/libsystem_kernel.dylib
+     58    0.1%          /usr/lib/system/libsystem_c.dylib
+     42    0.1%          /usr/lib/system/libsystem_pthread.dylib
+     13    0.0%          /usr/lib/system/libdyld.dylib
+      8    0.0%          /usr/lib/libc++abi.dylib
+      4    0.0%          /usr/lib/system/libsystem_platform.dylib
+      3    0.0%          /usr/lib/libc++.1.dylib
+
+ [JavaScript]:
+   ticks  total  nonlib   name
+  34468   79.5%   86.0%  LazyCompile: *playTetris /Users/ericeubank/projects/advent-of-code-2022/day17/solution2.js:129:20
+      1    0.0%    0.0%  LazyCompile: *<anonymous> /Users/ericeubank/projects/advent-of-code-2022/day17/solution2.js:81:27
+      1    0.0%    0.0%  Function: ^canMoveDown /Users/ericeubank/projects/advent-of-code-2022/day17/solution2.js:68:16
+
+ [C++]:
+   ticks  total  nonlib   name
+   3169    7.3%    7.9%  T node::contextify::CompiledFnEntry::~CompiledFnEntry()
+   1392    3.2%    3.5%  T _kdebug_trace_string
+    316    0.7%    0.8%  T __simple_getenv
+    257    0.6%    0.6%  t __os_once_gate_broadcast
+     95    0.2%    0.2%  T _necp_open
+     65    0.1%    0.2%  T _OSAtomicDecrement32
+     29    0.1%    0.1%  T _OSAtomicIncrement32
+     24    0.1%    0.1%  T node::builtins::BuiltinLoader::CompileFunction(v8::FunctionCallbackInfo<v8::Value> const&)
+      9    0.0%    0.0%  T ___pthread_init
+      8    0.0%    0.0%  T __platform_strlen
+      6    0.0%    0.0%  t __pthread_key_global_init
+      5    0.0%    0.0%  t __pthread_mutex_global_init
+      4    0.0%    0.0%  t non-virtual thunk to node::PerIsolatePlatformData::NonNestableDelayedTasksEnabled() const
+      4    0.0%    0.0%  t ___pfz_setup
+      3    0.0%    0.0%  t __os_once_gate_wait
+      2    0.0%    0.0%  t std::__1::ostreambuf_iterator<char, std::__1::char_traits<char> > std::__1::__pad_and_output<char, std::__1::char_traits<char> >(std::__1::ostreambuf_iterator<char, std::__1::char_traits<char> >, char const*, char const*, char const*, std::__1::ios_base&, char)
+      2    0.0%    0.0%  t std::__1::basic_ostream<char, std::__1::char_traits<char> >& std::__1::__put_character_sequence<char, std::__1::char_traits<char> >(std::__1::basic_ostream<char, std::__1::char_traits<char> >&, char const*, unsigned long)
+      2    0.0%    0.0%  t __pthread_set_main_qos
+      2    0.0%    0.0%  T _semaphore_destroy
+      2    0.0%    0.0%  T _pthread_detach
+      2    0.0%    0.0%  T _pthread_cond_signal
+      2    0.0%    0.0%  T __platform_strncmp
+      1    0.0%    0.0%  t void std::__1::__tree_balance_after_insert<std::__1::__tree_node_base<void*>*>(std::__1::__tree_node_base<void*>*, std::__1::__tree_node_base<void*>*)
+      1    0.0%    0.0%  t non-virtual thunk to v8::internal::PointersUpdatingVisitor::~PointersUpdatingVisitor()
+      1    0.0%    0.0%  t __pthread_mutex_check_init_slow
+      1    0.0%    0.0%  T node::AsyncWrap::EmitTraceEventDestroy()
+      1    0.0%    0.0%  T _pthread_mutexattr_settype
+      1    0.0%    0.0%  T _pthread_getschedparam
+      1    0.0%    0.0%  T _host_request_notification
+
+ [Summary]:
+   ticks  total  nonlib   name
+  34470   79.5%   86.0%  JavaScript
+   5407   12.5%   13.5%  C++
+   4169    9.6%   10.4%  GC
+   3279    7.6%          Shared libraries
+    217    0.5%          Unaccounted
+
+ [C++ entry points]:
+   ticks    cpp   total   name
+   1524   97.9%    3.5%  T node::contextify::CompiledFnEntry::~CompiledFnEntry()
+     24    1.5%    0.1%  T node::builtins::BuiltinLoader::CompileFunction(v8::FunctionCallbackInfo<v8::Value> const&)
+      4    0.3%    0.0%  t non-virtual thunk to node::PerIsolatePlatformData::NonNestableDelayedTasksEnabled() const
+      2    0.1%    0.0%  t std::__1::ostreambuf_iterator<char, std::__1::char_traits<char> > std::__1::__pad_and_output<char, std::__1::char_traits<char> >(std::__1::ostreambuf_iterator<char, std::__1::char_traits<char> >, char const*, char const*, char const*, std::__1::ios_base&, char)
+      2    0.1%    0.0%  t std::__1::basic_ostream<char, std::__1::char_traits<char> >& std::__1::__put_character_sequence<char, std::__1::char_traits<char> >(std::__1::basic_ostream<char, std::__1::char_traits<char> >&, char const*, unsigned long)
+      1    0.1%    0.0%  t void std::__1::__tree_balance_after_insert<std::__1::__tree_node_base<void*>*>(std::__1::__tree_node_base<void*>*, std::__1::__tree_node_base<void*>*)
+
+ [Bottom up (heavy) profile]:
+  Note: percentage shows a share of a particular caller in the total
+  amount of its parent calls.
+  Callers occupying less than 1.0% are not shown.
+
+   ticks parent  name
+  34468   79.5%  LazyCompile: *playTetris /Users/ericeubank/projects/advent-of-code-2022/day17/solution2.js:129:20
+  34423   99.9%    LazyCompile: ~run /Users/ericeubank/projects/advent-of-code-2022/day17/solution2.js:157:19
+  34423  100.0%      T node::contextify::CompiledFnEntry::~CompiledFnEntry()
+
+   3169    7.3%  T node::contextify::CompiledFnEntry::~CompiledFnEntry()
+    903   28.5%    LazyCompile: *playTetris /Users/ericeubank/projects/advent-of-code-2022/day17/solution2.js:129:20
+    903  100.0%      LazyCompile: ~run /Users/ericeubank/projects/advent-of-code-2022/day17/solution2.js:157:19
+    903  100.0%        T node::contextify::CompiledFnEntry::~CompiledFnEntry()
+    181    5.7%    T node::contextify::CompiledFnEntry::~CompiledFnEntry()
+    179   98.9%      LazyCompile: *playTetris /Users/ericeubank/projects/advent-of-code-2022/day17/solution2.js:129:20
+    179  100.0%        LazyCompile: ~run /Users/ericeubank/projects/advent-of-code-2022/day17/solution2.js:157:19
+    179  100.0%          T node::contextify::CompiledFnEntry::~CompiledFnEntry()
+
+   2931    6.8%  /usr/lib/system/libsystem_m.dylib
+   2931  100.0%    LazyCompile: *playTetris /Users/ericeubank/projects/advent-of-code-2022/day17/solution2.js:129:20
+   2931  100.0%      LazyCompile: ~run /Users/ericeubank/projects/advent-of-code-2022/day17/solution2.js:157:19
+   2931  100.0%        T node::contextify::CompiledFnEntry::~CompiledFnEntry()
+
+   1392    3.2%  T _kdebug_trace_string
+
