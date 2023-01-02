@@ -3,28 +3,28 @@ const fsPromises = fs.promises;
 
 const BLOCK_ROW_MASK = 127;
 const SHAFT_WIDTH = 7;
+const SHAFT_HEIGHT = 10000;
 const NEXT_BLOCK_Y_OFFSET = 3;
 const EDGE_LEFT = 64;
 const EDGE_RIGHT = 1;
 
 class Shaft {
-    shaftSize = 10000;
-    rows = new Array(Number(this.shaftSize)).fill(0);
+    rows = new Array(SHAFT_HEIGHT).fill(0);
     maxRowNumSet = 0;
 
     get(rowNum) {
         if (!this.hasRowBeenSet(rowNum)) {
             return this.walls;
         }
-        return this.rows[rowNum % this.shaftSize];
+        return this.rows[rowNum % SHAFT_HEIGHT];
     }
 
     set(rowNum, value) {
         if (!this.hasRowBeenSet(rowNum)) {
-            this.rows[rowNum % this.shaftSize] = this.walls;
+            this.rows[rowNum % SHAFT_HEIGHT] = this.walls;
             this.maxRowNumSet = rowNum;
         }
-        this.rows[rowNum % this.shaftSize] |= value;
+        this.rows[rowNum % SHAFT_HEIGHT] |= value;
     }
 
     hasRowBeenSet(rowNum) {
@@ -32,7 +32,7 @@ class Shaft {
     }
 
     print() {
-        for (let i = this.shaftSize - 1; i >= 0; i--) {
+        for (let i = SHAFT_HEIGHT - 1; i >= 0; i--) {
             console.log(`|${this.rows[i].toString(2).padStart(SHAFT_WIDTH, 0).replaceAll('0', '.').replaceAll('1', '#')}|`);
         }
         console.log('---------');
@@ -115,6 +115,7 @@ function playTetris(input, numBlocks) {
         }
     }
 
+    shaft.print();
     return maxY;
 }
 
