@@ -8,7 +8,7 @@ const EDGE_LEFT = 64;
 const EDGE_RIGHT = 1;
 
 class Shaft {
-    shaftSize = 1000;
+    shaftSize = 10000;
     rows = new Array(Number(this.shaftSize)).fill(0);
     maxRowNumSet = 0;
 
@@ -37,6 +37,17 @@ class Shaft {
         }
         console.log('---------');
     }
+
+    printEvery40() {
+        let last30 = 0;
+        for (let i = 0; i < this.shaftSize; i += 40) {
+            //console.log(i, this.rows[i]);
+            if (this.rows[i] === 30 && i !== 0) {
+                console.log(i, i - last30);
+                last30 = i;
+            }
+        }
+    }
 }
 
 async function readInput(path) {
@@ -48,12 +59,13 @@ function playTetris(input, numBlocks) {
     const shapeOrder =        ['-', '+', '┘', '|', '□'];
     const shapeHeights =      [ 1,   3,   3,   4,   2 ];
     const shapeSpaceToRight = [ 1,   2,   2,   4,   3 ];
-    let nextShape = shapeOrder[0];
+    const shaft = new Shaft();
+
+    let nextShape;
     let maxY = -1;
     let thisY = -1;
-    const shaft = new Shaft();
     let nextWind = 0;
-    let block = createBlock(nextShape, maxY); //floor
+    let block;
     let blockHeight = 1;
     let moveDownBlockHeight = 1;
     
@@ -114,6 +126,7 @@ function playTetris(input, numBlocks) {
         }
     }
 
+    shaft.printEvery40();
     return maxY;
 }
 
@@ -195,7 +208,7 @@ function setInShaft(block, blockHeight, y, shaft) {
 }
 
 async function run() {
-    const input = await readInput('input.txt');
+    const input = await readInput('testinput.txt');
 
     {
         console.time();
@@ -204,10 +217,16 @@ async function run() {
         console.timeEnd();
     }
 
-    //PART II ????
+    //PART II
+    // run n loops
+    // check for cycle
+    // if found, extrapolate height w/o simulation
+    // complete remaining loops
+
+    // if not found, run n loops
     // {
     //     console.time();
-    //     const height = playTetris(input, 10000000);
+    //     const height = playTetris(input, 1000000000000);
     //     console.log('Height 1000000000000', height);
     //     console.timeEnd();
     // }
