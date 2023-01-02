@@ -1,7 +1,7 @@
 const fs = require('fs');
 const fsPromises = fs.promises;
 
-const BLOCK_MASK = 127;
+const BLOCK_ROW_MASK = 127;
 const SHAFT_WIDTH = 7;
 const NEXT_BLOCK_Y_OFFSET = 3;
 const EDGE_LEFT = 64;
@@ -152,7 +152,7 @@ function createBlock(shape) {
 
 function canShiftLeft(block, blockHeight, y, shaft) {
     for (let i = 0; i < blockHeight; i++) {
-        const blockRow = (block & (BLOCK_MASK << (i * SHAFT_WIDTH))) >> (i * SHAFT_WIDTH);
+        const blockRow = (block & (BLOCK_ROW_MASK << (i * SHAFT_WIDTH))) >> (i * SHAFT_WIDTH);
         if ((blockRow & EDGE_LEFT) !== 0) {
             return false;
         }
@@ -165,7 +165,7 @@ function canShiftLeft(block, blockHeight, y, shaft) {
 
 function canShiftRight(block, blockHeight, y, shaft) {
     for (let i = 0; i < blockHeight; i++) {
-        const blockRow = (block & (BLOCK_MASK << (i * SHAFT_WIDTH))) >> (i * SHAFT_WIDTH);
+        const blockRow = (block & (BLOCK_ROW_MASK << (i * SHAFT_WIDTH))) >> (i * SHAFT_WIDTH);
         if ((blockRow & EDGE_RIGHT) !== 0) {
             return false;
         }
@@ -181,7 +181,7 @@ function canMoveDown(block, blockHeight, y, shaft) {
         return false;
     }
     for (let i = 0; i < blockHeight; i++) {
-        const blockRow = (block & (BLOCK_MASK << (i * SHAFT_WIDTH))) >> (i * SHAFT_WIDTH);
+        const blockRow = (block & (BLOCK_ROW_MASK << (i * SHAFT_WIDTH))) >> (i * SHAFT_WIDTH);
         if ((blockRow & shaft.get((y - 1) + i)) !== 0) {
             return false;
         }
@@ -191,7 +191,7 @@ function canMoveDown(block, blockHeight, y, shaft) {
 
 function setInShaft(block, blockHeight, y, shaft) {
     for (let i = 0; i < blockHeight; i++) {
-        shaft.set(y + i, (block & (BLOCK_MASK << (i * SHAFT_WIDTH))) >> (i * SHAFT_WIDTH));
+        shaft.set(y + i, (block & (BLOCK_ROW_MASK << (i * SHAFT_WIDTH))) >> (i * SHAFT_WIDTH));
     };
 }
 
