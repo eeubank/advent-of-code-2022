@@ -37,17 +37,6 @@ class Shaft {
         }
         console.log('---------');
     }
-
-    printEvery40() {
-        let last30 = 0;
-        for (let i = 0; i < this.shaftSize; i += 40) {
-            //console.log(i, this.rows[i]);
-            if (this.rows[i] === 30 && i !== 0) {
-                console.log(i, i - last30);
-                last30 = i;
-            }
-        }
-    }
 }
 
 async function readInput(path) {
@@ -126,7 +115,6 @@ function playTetris(input, numBlocks) {
         }
     }
 
-    shaft.printEvery40();
     return maxY;
 }
 
@@ -208,7 +196,7 @@ function setInShaft(block, blockHeight, y, shaft) {
 }
 
 async function run() {
-    const input = await readInput('testinput.txt');
+    const input = await readInput('input.txt');
 
     {
         console.time();
