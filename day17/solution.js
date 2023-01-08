@@ -3,28 +3,36 @@ const fsPromises = fs.promises;
 
 const BLOCK_ROW_MASK = 127;
 const SHAFT_WIDTH = 7;
-const SHAFT_HEIGHT = 10000;
 const NEXT_BLOCK_Y_OFFSET = 3;
 const EDGE_LEFT = 64;
 const EDGE_RIGHT = 1;
 
 class Shaft {
-    rows = new Array(SHAFT_HEIGHT).fill(0);
-    maxRowNumSet = -1;
+    height;
+    rows = new Array(this.height).fill(0);
+    maxRowNumSet = -1n;
+
+    constructor(height) {
+        this.height = height;
+    }
 
     get(rowNum) {
         if (!this.hasRowBeenSet(rowNum)) {
             return 0;
         }
-        return this.rows[rowNum % SHAFT_HEIGHT];
+        return this.rows[rowNum % BigInt(this.height)];
+    }
+
+    getRowHistory(count) {
+        return new Array(count).fill(0).map((_, idx) => this.get(this.maxRowNumSet - BigInt(idx)));
     }
 
     set(rowNum, value) {
         if (!this.hasRowBeenSet(rowNum)) {
-            this.rows[rowNum % SHAFT_HEIGHT] = 0;
+            this.rows[rowNum % BigInt(this.height)] = 0;
             this.maxRowNumSet = rowNum;
         }
-        this.rows[rowNum % SHAFT_HEIGHT] |= value;
+        this.rows[rowNum % BigInt(this.height)] |= value;
     }
 
     hasRowBeenSet(rowNum) {
@@ -32,10 +40,69 @@ class Shaft {
     }
 
     print() {
-        for (let i = SHAFT_HEIGHT - 1; i >= 0; i--) {
+        for (let i = this.height - 1; i >= 0; i--) {
             console.log(`|${this.rows[i].toString(2).padStart(SHAFT_WIDTH, 0).replaceAll('0', '.').replaceAll('1', '#')}|`);
         }
         console.log('---------');
+    }
+}
+
+class CycleTracker {
+    samples = new Map();
+    historyLen;
+
+    constructor(historyLen) {
+        this.historyLen = historyLen;
+    }
+
+    checkForCycle(windIdx, shapeIdx, blockNum, shaftHeight, shaft) {
+        if (blockNum <= this.historyLen) {
+            return false;
+        }
+
+        const history = shaft.getRowHistory(this.historyLen).join('|');
+        const key = `W${windIdx}|S${shapeIdx}|H${history}`;
+        
+        if (!this.samples.has(key)) {
+            this.samples.set(key, [{ shaftHeight, blockNum }]);
+            return false;
+        }
+
+        const sample = this.samples.get(key);
+        sample.push({ shaftHeight, blockNum });
+        if (sample.length < 10) {
+            return false;
+        }
+        
+        for (let i = 0; i < sample.length - 2; i++) {
+            if (sample[i + 2].shaftHeight - sample[i + 1].shaftHeight !== sample[i + 1].shaftHeight - sample[i].shaftHeight
+                || sample[i + 2].blockNum - sample[i + 1].blockNum !== sample[i + 1].blockNum - sample[i].blockNum
+            ) {
+                this.samples.delete(key);
+                return false;
+            }
+        }
+
+        const previousSample = sample.at(-2);
+
+        console.log(sample);
+        
+        return {
+            blockNum,
+            blocksInCycle: blockNum - previousSample.blockNum,
+            height: shaftHeight - previousSample.shaftHeight,
+        };
+    }
+
+    calculateAddedShaftHeight(cycle, numBlocks) {
+        console.log(cycle, numBlocks);
+        const blocksRemaining = numBlocks - cycle.blockNum - 1n;
+        const cyclesRemaining = blocksRemaining / cycle.blocksInCycle;
+        const heightAdded = cycle.height * cyclesRemaining;
+        const blocksConsumed = cyclesRemaining * cycle.blocksInCycle;
+        const result = { blocksRemaining, cyclesRemaining, blocksConsumed, heightAdded };
+        console.log(result);
+        return result;
     }
 }
 
@@ -44,37 +111,41 @@ async function readInput(path) {
     return buffer.toString().split('');
 }
 
-function playTetris(input, numBlocks) {
+function playTetris(input, numBlocks, checkForCycles = true) {
     const shapeOrder =        ['-', '+', '┘', '|', '□'];
     const shapeHeights =      [ 1,   3,   3,   4,   2 ];
     const shapeSpaceToRight = [ 1,   2,   2,   4,   3 ];
-    const shaft = new Shaft();
+    const shaft = new Shaft(input.length * 5);
+    const cycleTracker = new CycleTracker(500);
 
-    let nextShape;
-    let maxY = -1;
-    let thisY = -1;
-    let nextWind = 0;
-    let block;
+    let maxY = -1n;
+    let thisY = -1n;
+    let nextWindIdx = 0;
     let blockHeight = 1;
-    let moveDownBlockHeight = 1;
-    
-    for (let blockNum = 0; blockNum < numBlocks; blockNum++) {
-        const nextShapeIdx = blockNum % shapeOrder.length;
-        let nextY = thisY + blockHeight + NEXT_BLOCK_Y_OFFSET;
+    let cycle;
+
+    for (let blockNum = 0n; blockNum < numBlocks; blockNum++) {
+        const nextY = thisY + BigInt(blockHeight + NEXT_BLOCK_Y_OFFSET);
         maxY = nextY > maxY ? nextY : maxY;
         thisY = maxY;
-        nextShape = shapeOrder[nextShapeIdx];
-        block = createBlock(nextShape);
+
+        const nextShapeIdx = Number(blockNum % BigInt(shapeOrder.length));
+        const nextShape = shapeOrder[nextShapeIdx];
+        let block = createBlock(nextShape);
         blockHeight = shapeHeights[nextShapeIdx];
-        moveDownBlockHeight = nextShape === '+' ? 2 : 1;
+        const moveDownBlockHeight = nextShape === '+' ? 2 : 1;
+
+        const startWindIdx = (nextWindIdx + 1) % input.length;
 
         // move down through the offset immediately, this is always clear
-        thisY -= NEXT_BLOCK_Y_OFFSET;
+        thisY -= BigInt(NEXT_BLOCK_Y_OFFSET);
         let spaceToLeft = 2;
         let spaceToRight = shapeSpaceToRight[nextShapeIdx];
         let shift = 0;
+        let nextWind;
         for (let i = 0; i < NEXT_BLOCK_Y_OFFSET; i++) {
-            if (input[nextWind++ % input.length] === '>') {
+            nextWind = input[nextWindIdx++ % input.length];
+            if (nextWind === '>') {
                 if (spaceToRight > 0) {
                     spaceToRight--;
                     spaceToLeft++;
@@ -97,7 +168,8 @@ function playTetris(input, numBlocks) {
 
         let canFall = true;
         while (canFall) {
-            if (input[nextWind++ % input.length] === '>') {
+            nextWind = input[nextWindIdx++ % input.length];
+            if (nextWind === '>') {
                 if (canShiftRight(block, blockHeight, thisY, shaft)) {
                     block >>= 1;
                 }
@@ -111,12 +183,20 @@ function playTetris(input, numBlocks) {
                 thisY--;
             } else {
                 setInShaft(block, blockHeight, thisY, shaft);
+                if (checkForCycles && !cycle) {
+                    const cycleFound = cycleTracker.checkForCycle(startWindIdx, nextShapeIdx, blockNum, maxY > thisY ? maxY : thisY, shaft);
+                    if (cycleFound) {
+                        cycle = cycleTracker.calculateAddedShaftHeight(cycleFound, numBlocks);
+                        numBlocks -= cycle.blocksConsumed;
+                        console.log(shapeOrder[nextShapeIdx]);  
+                    }
+                }
             }
         }
     }
 
-    shaft.print();
-    return maxY;
+    //shaft.print();
+    return maxY + (cycle ? cycle.heightAdded : 0n);
 }
 
 function createBlock(shape) {
@@ -157,7 +237,7 @@ function canShiftLeft(block, blockHeight, y, shaft) {
         if ((blockRow & EDGE_LEFT) !== 0) {
             return false;
         }
-        if (((blockRow << 1) & shaft.get(y + i)) !== 0) {
+        if (((blockRow << 1) & shaft.get(y + BigInt(i))) !== 0) {
             return false;
         }
     }
@@ -170,7 +250,7 @@ function canShiftRight(block, blockHeight, y, shaft) {
         if ((blockRow & EDGE_RIGHT) !== 0) {
             return false;
         }
-        if (((blockRow >> 1) & shaft.get(y + i)) !== 0) {
+        if (((blockRow >> 1) & shaft.get(y + BigInt(i))) !== 0) {
             return false;
         }
     }
@@ -178,12 +258,12 @@ function canShiftRight(block, blockHeight, y, shaft) {
 }
 
 function canMoveDown(block, blockHeight, y, shaft) {
-    if (y === 0) {
+    if (y === 0n) {
         return false;
     }
     for (let i = 0; i < blockHeight; i++) {
         const blockRow = (block & (BLOCK_ROW_MASK << (i * SHAFT_WIDTH))) >> (i * SHAFT_WIDTH);
-        if ((blockRow & shaft.get((y - 1) + i)) !== 0) {
+        if ((blockRow & shaft.get((y - 1n) + BigInt(i))) !== 0) {
             return false;
         }
     }
@@ -192,33 +272,56 @@ function canMoveDown(block, blockHeight, y, shaft) {
 
 function setInShaft(block, blockHeight, y, shaft) {
     for (let i = 0; i < blockHeight; i++) {
-        shaft.set(y + i, (block & (BLOCK_ROW_MASK << (i * SHAFT_WIDTH))) >> (i * SHAFT_WIDTH));
+        shaft.set(y + BigInt(i), (block & (BLOCK_ROW_MASK << (i * SHAFT_WIDTH))) >> (i * SHAFT_WIDTH));
     };
 }
 
 async function run() {
-    const input = await readInput('input.txt');
-
+    console.log('\nTEST 2022 ================================');
     {
-        console.time();
-        const height = playTetris(input, 2022);
-        console.log('Height 2022', height);
-        console.timeEnd();
+        const input = await readInput('testinput.txt');
+
+        {
+            console.time();
+            const height = playTetris(input, 2022n);
+            console.log('Height 2022', height);
+            console.timeEnd();
+        }
     }
+    console.log('\nREAL 2022 ================================');
+    {
+        const input = await readInput('input.txt');
 
-    //PART II
-    // run n loops
-    // check for cycle
-    // if found, extrapolate height w/o simulation
-    // complete remaining loops
+        {
+            console.time();
+            const height = playTetris(input, 2022n);
+            console.log('Height 2022', height);
+            console.timeEnd();
+        }
+    }
+    console.log('\nTEST 1 T  ================================');
+    {
+        const input = await readInput('testinput.txt');
 
-    // if not found, run n loops
-    // {
-    //     console.time();
-    //     const height = playTetris(input, 1000000000000);
-    //     console.log('Height 1000000000000', height);
-    //     console.timeEnd();
-    // }
+        {
+            console.time();
+            const height = playTetris(input, 1000000000000n);
+            console.log('Height 1000000000000', height);
+            console.timeEnd();
+        }
+    }
+    console.log('\nREAL 1 T  ================================');
+    {
+        const input = await readInput('input.txt');
+
+        {
+            console.time();
+            const height = playTetris(input, 1000000000000n);
+            console.log('Height 1000000000000', height);
+            console.timeEnd();
+        }
+    }
+    console.log();
 }
 
 run();
